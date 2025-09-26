@@ -1,11 +1,16 @@
+import os
 from flask import Flask, request, jsonify, render_template, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
+from dotenv import load_dotenv   # ← agregado
+
+# Cargar las variables de entorno (imagen)
+load_dotenv()
 
 #crear instancia
 app =  Flask(__name__)
 
-# Configuración de la base de datos PostgreSQL
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://fernando:VBHFQxVIUoxnsVJUdC0cKHjWiVFNb0wD@dpg-d2vp4ojuibrs73djrdjg-a.oregon-postgres.render.com/db_tec_v9dq'
+# Configuración de la base de datos PostgreSQL (imagen)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -27,7 +32,6 @@ class Estudiante(db.Model):
             'ap_materno': self.ap_materno,
             'semestre': self.semestre,
         }
-
 
 #Ruta raiz
 @app.route('/')
@@ -60,7 +64,6 @@ def create_estudiante():
     #Aqui sigue si es GET
     return render_template('create_estudiante.html')
 
-
 #Eliminar estudiante
 @app.route('/estudiantes/delete/<string:no_control>')
 def delete_estudiante(no_control):
@@ -83,13 +86,11 @@ def update_estudiante(no_control):
         return redirect(url_for('index'))
     return render_template('update_estudiante.html', estudiante=estudiante)
 
-
-
 #Ruta /alumnos
 @app.route('/alumnos')
 def getAlumnos():
     return 'Aqui van los alumnos'
 
-
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True) 
+    
